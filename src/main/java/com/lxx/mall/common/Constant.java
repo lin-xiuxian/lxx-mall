@@ -6,5 +6,7 @@ package com.lxx.mall.common;
  * @description 常量值
  */
 public class Constant {
+
+    public static final String LXX_MALL_USER = "lxx_mall_user";
     public static final String SALT = "ig(s*'/2few";
 }

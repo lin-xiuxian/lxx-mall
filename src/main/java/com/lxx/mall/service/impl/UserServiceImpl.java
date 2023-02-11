@@ -49,4 +49,33 @@ public class UserServiceImpl implements UserService {
         }
 
     }
+
+    @Override
+    public User login(String userName, String password) throws LxxMallException {
+        String md5Password = null;
+        try {
+            md5Password = MD5Utils.getMD5String(password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        User user = userMapper.selectLogin(userName, md5Password);
+        if(user == null){
+            throw new LxxMallException(LxxMallExceptionEnum.WRONG_PASSWORD);
+        }
+        return user;
+    }
+
+    @Override
+    public void updateInformation(User user) throws LxxMallException {
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);
+        if (updateCount > 1) {
+            throw new LxxMallException(LxxMallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    @Override
+    public boolean checkAdminRole(User user){
+        return user.getRole().equals(2);
+    }
+
 }

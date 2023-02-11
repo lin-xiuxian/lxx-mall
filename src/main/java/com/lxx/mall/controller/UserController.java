@@ -1,6 +1,7 @@
 package com.lxx.mall.controller;
 
 import com.lxx.mall.common.ApiRestResponse;
+import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.pojo.User;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * @author 林修贤
@@ -30,6 +33,13 @@ public class UserController {
         return userService.getUser();
     }
 
+    /**
+     * 注册
+     * @param userName
+     * @param password
+     * @return
+     * @throws LxxMallException
+     */
     @PostMapping("/register")
     @ResponseBody
     public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws LxxMallException {
@@ -45,5 +55,93 @@ public class UserController {
         }
         userService.register(userName, password);
         return ApiRestResponse.success();
+    }
+
+    /**
+     * 用户登录
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws LxxMallException
+     */
+    @PostMapping("/login")
+    @ResponseBody
+    public ApiRestResponse login(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws LxxMallException {
+        if (StringUtils.isNullOrEmpty(userName)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isNullOrEmpty(password)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        //保存用户信息时不保存密码
+        user.setPassword(null);
+        session.setAttribute(Constant.LXX_MALL_USER, user);
+        return ApiRestResponse.success(user);
+    }
+
+    /**
+     * 更新个性签名
+     * @param session
+     * @param signature
+     * @return
+     * @throws LxxMallException
+     */
+    @PostMapping("/user/update")
+    @ResponseBody
+    public ApiRestResponse updateUserInfo(HttpSession session, @RequestParam String signature) throws LxxMallException {
+        User currentUser = (User) session.getAttribute(Constant.LXX_MALL_USER);
+        if (currentUser == null) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_LOGIN);
+        }
+        User user = new User();
+        user.setId(currentUser.getId());
+        user.setPersonalizedSignature(signature);
+        userService.updateInformation(user);
+        return ApiRestResponse.success();
+    }
+
+    /**
+     * 登出，删除session
+     * @param session
+     * @return
+     */
+    @PostMapping("/user/logout")
+    @ResponseBody
+    public ApiRestResponse logout(HttpSession session){
+        session.removeAttribute(Constant.LXX_MALL_USER);
+        return ApiRestResponse.success();
+    }
+
+    /**
+     * 管理员登录接口
+     * @param userName
+     * @param password
+     * @param session
+     * @return
+     * @throws LxxMallException
+     */
+    @PostMapping("/adminLogin")
+    @ResponseBody
+    public ApiRestResponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws LxxMallException {
+        if (StringUtils.isNullOrEmpty(userName)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isNullOrEmpty(password)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        //校验是否是管理员
+        if (userService.checkAdminRole(user)) {
+            //是管理员，执行操作
+            //保存用户信息时不保存密码
+            user.setPassword(null);
+            session.setAttribute(Constant.LXX_MALL_USER, user);
+            return ApiRestResponse.success(user);
+        } else {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_ADMIN);
+        }
+
     }
 }

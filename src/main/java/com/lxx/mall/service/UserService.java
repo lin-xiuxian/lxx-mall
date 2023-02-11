@@ -13,4 +13,11 @@ public interface UserService {
     User getUser();
 
     void register(String userName, String password) throws LxxMallException;
+
+
+    User login(String userName, String password) throws LxxMallException;
+
+    void updateInformation(User user) throws LxxMallException;
+
+    boolean checkAdminRole(User user);
 }
