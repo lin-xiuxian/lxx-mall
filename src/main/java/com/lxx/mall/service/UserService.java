@@ -1,5 +1,6 @@
 package com.lxx.mall.service;
 
+import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.model.pojo.User;
 import org.springframework.stereotype.Service;
 
@@ -10,4 +11,6 @@ import org.springframework.stereotype.Service;
  */
 public interface UserService {
     User getUser();
+
+    void register(String userName, String password) throws LxxMallException;
 }

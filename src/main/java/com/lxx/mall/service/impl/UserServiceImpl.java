@@ -1,5 +1,7 @@
 package com.lxx.mall.service.impl;
 
+import com.lxx.mall.exception.LxxMallException;
+import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.dao.UserMapper;
 import com.lxx.mall.model.pojo.User;
 import com.lxx.mall.service.UserService;
@@ -18,5 +20,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser() {
         return userMapper.selectByPrimaryKey(9);
+    }
+
+    @Override
+    public void register(String userName, String password) throws LxxMallException {
+        //查询是否重名
+        User result = userMapper.selectByName(userName);
+        if (result != null){
+            throw new LxxMallException(LxxMallExceptionEnum.NAME_EXISTS);
+        }
+
+        //写到数据库
+        User user = new User();
+        user.setUsername(userName);
+        user.setPassword(password);
+
+        int count = userMapper.insertSelective(user);
+        if (count == 0){
+            throw new LxxMallException(LxxMallExceptionEnum.INSERT_FAILED);
+        }
+
     }
 }
