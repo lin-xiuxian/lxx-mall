@@ -7,6 +7,8 @@ import com.lxx.mall.model.pojo.User;
 import com.lxx.mall.model.request.AddCategoryReq;
 import com.lxx.mall.service.CategoryService;
 import com.lxx.mall.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +29,8 @@ public class CategoryController {
     UserService userService;
     @Autowired
     CategoryService categoryService;
+
+    @ApiOperation("后台添加目录")
     @PostMapping("/admin/category/add")
     @ResponseBody
     public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq){
@@ -45,4 +49,12 @@ public class CategoryController {
             return ApiRestResponse.error(LxxMallExceptionEnum.NEED_ADMIN);
         }
     }
+
+    @ApiOperation("后台删除目录")
+    @PostMapping("/admin/category/delete")
+    @ResponseBody
+    public ApiRestResponse deleteCategory() {
+        return null;
+    }
+
 }
