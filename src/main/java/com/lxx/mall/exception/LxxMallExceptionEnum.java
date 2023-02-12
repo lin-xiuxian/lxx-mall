@@ -9,12 +9,13 @@ public enum LxxMallExceptionEnum {
     NEED_USER_NAME(10001, "用户名不能为空"),
     NEED_PASSWORD(10002, "密码不能为空"),
     PASSWORD_TOO_SHORT(1003, "密码长度不能少于8位"),
-    NAME_EXISTS(1004, "已存在用户，注册失败"),
+    NAME_EXISTS(1004, "不允许重名"),
     INSERT_FAILED(1005, "数据插入失败，请重试"),
     WRONG_PASSWORD(1006, "密码错误"),
     NEED_LOGIN(1007, "用户未登录"),
     UPDATE_FAILED(1008, "更新失败"),
     NEED_ADMIN(1009, "无管理员权限"),
+    PARA_NOT_NULL(10010, "参数不能为空"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

@@ -5,7 +5,7 @@ package com.lxx.mall.exception;
  * @date 2023/2/11
  * @description 统一异常
  */
-public class LxxMallException extends Exception {
+public class LxxMallException extends RuntimeException {
     private final Integer code;
     private final String message;
 
