@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 /**
  * @author 林修贤
@@ -28,10 +29,8 @@ public class CategoryController {
     CategoryService categoryService;
     @PostMapping("/admin/category/add")
     @ResponseBody
-    public ApiRestResponse addCategory(HttpSession session, @RequestBody AddCategoryReq addCategoryReq){
-        if (addCategoryReq.getName() == null || addCategoryReq.getOrderNum() == null || addCategoryReq.getParentId() == null || addCategoryReq.getType() == null){
-            return ApiRestResponse.error(LxxMallExceptionEnum.PARA_NOT_NULL);
-        }
+    public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq){
+
         User currentUser = (User)session.getAttribute(Constant.LXX_MALL_USER);
         if (currentUser == null){
             return ApiRestResponse.error(LxxMallExceptionEnum.NEED_LOGIN);
