@@ -1,5 +1,6 @@
 package com.lxx.mall.service;
 
+import com.lxx.mall.model.pojo.Category;
 import com.lxx.mall.model.request.AddCategoryReq;
 
 /**
@@ -10,4 +11,6 @@ import com.lxx.mall.model.request.AddCategoryReq;
 public interface CategoryService {
 
     void add(AddCategoryReq addCategoryReq);
+
+    void update(Category updateCategory);
 }

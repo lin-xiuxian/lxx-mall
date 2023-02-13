@@ -34,4 +34,18 @@ public class CategoryServiceImpl implements CategoryService {
             throw new LxxMallException(LxxMallExceptionEnum.INSERT_FAILED);
         }
     }
+
+    @Override
+    public void update(Category updateCategory){
+        if(updateCategory != null){
+            Category categoryOld = categoryMapper.selectByName(updateCategory.getName());
+            if(categoryOld != null && !categoryOld.getId().equals(updateCategory.getId())){
+                throw new LxxMallException(LxxMallExceptionEnum.NAME_EXISTS);
+            }
+        }
+        int count = categoryMapper.updateByPrimaryKeySelective(updateCategory);
+        if(count == 0){
+            throw new LxxMallException(LxxMallExceptionEnum.UPDATE_FAILED);
+        }
+    }
 }
