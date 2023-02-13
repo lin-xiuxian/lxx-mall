@@ -1,7 +1,11 @@
 package com.lxx.mall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.lxx.mall.model.pojo.Category;
 import com.lxx.mall.model.request.AddCategoryReq;
+import com.lxx.mall.model.vo.CategoryVO;
+
+import java.util.List;
 
 /**
  * @author 林修贤
@@ -15,4 +19,6 @@ public interface CategoryService {
     void update(Category updateCategory);
 
     void delete(Integer id);
+
+    PageInfo listForAdmin(Integer pageNum, Integer pageSize);
 }

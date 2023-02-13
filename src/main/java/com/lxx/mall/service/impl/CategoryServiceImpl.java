@@ -1,14 +1,19 @@
 package com.lxx.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.dao.CategoryMapper;
 import com.lxx.mall.model.pojo.Category;
 import com.lxx.mall.model.request.AddCategoryReq;
+import com.lxx.mall.model.vo.CategoryVO;
 import com.lxx.mall.service.CategoryService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 林修贤
@@ -59,5 +64,13 @@ public class CategoryServiceImpl implements CategoryService {
         if(count == 0){
             throw new LxxMallException(LxxMallExceptionEnum.DELETE_FAILED);
         }
+    }
+
+    @Override
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize, "type, order_num");
+        List<Category> categoryList = categoryMapper.selectList();
+        PageInfo pageInfo = new PageInfo(categoryList);
+        return pageInfo;
     }
 }

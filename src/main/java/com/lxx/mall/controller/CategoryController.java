@@ -1,5 +1,6 @@
 package com.lxx.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
@@ -72,4 +73,11 @@ public class CategoryController {
         return ApiRestResponse.success();
     }
 
+    @ApiOperation("后台目录列表")
+    @PostMapping("/admin/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
+    }
 }
