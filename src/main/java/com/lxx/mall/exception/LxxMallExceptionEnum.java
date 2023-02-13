@@ -17,6 +17,7 @@ public enum LxxMallExceptionEnum {
     NEED_ADMIN(1009, "无管理员权限"),
     PARA_NOT_NULL(10010, "参数不能为空"),
     REQUEST_PARAM_ERROR(10011, "参数错误"),
+    DELETE_FAILED(10012, "删除失败"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

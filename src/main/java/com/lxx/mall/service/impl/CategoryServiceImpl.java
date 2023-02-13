@@ -48,4 +48,16 @@ public class CategoryServiceImpl implements CategoryService {
             throw new LxxMallException(LxxMallExceptionEnum.UPDATE_FAILED);
         }
     }
+
+    @Override
+    public void delete(Integer id) {
+        Category categoryOld = categoryMapper.selectByPrimaryKey(id);
+        if(categoryOld == null){
+            throw new LxxMallException(LxxMallExceptionEnum.DELETE_FAILED);
+        }
+        int count = categoryMapper.deleteByPrimaryKey(id);
+        if(count == 0){
+            throw new LxxMallException(LxxMallExceptionEnum.DELETE_FAILED);
+        }
+    }
 }
