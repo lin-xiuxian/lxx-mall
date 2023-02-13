@@ -21,4 +21,6 @@ public interface CategoryService {
     void delete(Integer id);
 
     PageInfo listForAdmin(Integer pageNum, Integer pageSize);
+
+    List<CategoryVO> listCategoryForCustomer();
 }

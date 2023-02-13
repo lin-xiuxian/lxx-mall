@@ -8,6 +8,7 @@ import com.lxx.mall.model.pojo.Category;
 import com.lxx.mall.model.pojo.User;
 import com.lxx.mall.model.request.AddCategoryReq;
 import com.lxx.mall.model.request.UpdateCategoryReq;
+import com.lxx.mall.model.vo.CategoryVO;
 import com.lxx.mall.service.CategoryService;
 import com.lxx.mall.service.UserService;
 import io.swagger.annotations.Api;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author 林修贤
@@ -79,5 +81,13 @@ public class CategoryController {
     public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
         return ApiRestResponse.success(pageInfo);
+    }
+
+    @ApiOperation("前台目录列表")
+    @PostMapping("/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForCustomer() {
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+        return ApiRestResponse.success(categoryVOS);
     }
 }
