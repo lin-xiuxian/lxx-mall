@@ -58,7 +58,7 @@ public class ProductAdminController {
             e.printStackTrace();
         }
         try {
-            return ApiRestResponse.success(getHost(new URI(httpServletRequest.getRequestURI() + "/images/" + newFileName)));
+            return ApiRestResponse.success( getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFileName);
         } catch (URISyntaxException e) {
             return ApiRestResponse.error(LxxMallExceptionEnum.UPLOAD_FAILED);
         }
