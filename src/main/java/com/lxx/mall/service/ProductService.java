@@ -1,5 +1,6 @@
 package com.lxx.mall.service;
 
+import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.request.AddProductReq;
 
 /**
@@ -9,4 +10,8 @@ import com.lxx.mall.model.request.AddProductReq;
  */
 public interface ProductService {
     void add(AddProductReq addProductReq);
+
+    void update(Product updateProduct);
+
+    void delete(Integer id);
 }
