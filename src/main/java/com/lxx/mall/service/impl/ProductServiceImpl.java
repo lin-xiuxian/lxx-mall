@@ -2,16 +2,23 @@ package com.lxx.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.dao.ProductMapper;
 import com.lxx.mall.model.pojo.Product;
+import com.lxx.mall.model.query.ProductListQuery;
 import com.lxx.mall.model.request.AddProductReq;
+import com.lxx.mall.model.request.ProductListReq;
+import com.lxx.mall.model.vo.CategoryVO;
+import com.lxx.mall.service.CategoryService;
 import com.lxx.mall.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +30,8 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductMapper productMapper;
+    @Autowired
+    CategoryService categoryService;
 
     @Override
     public void add(AddProductReq addProductReq){
@@ -80,6 +89,47 @@ public class ProductServiceImpl implements ProductService {
     public Product detail(Integer id){
         Product product = productMapper.selectByPrimaryKey(id);
         return product;
+    }
+
+
+    @Override
+    public PageInfo list(ProductListReq productListReq){
+        //构建query对象
+        ProductListQuery productListQuery = new ProductListQuery();
+        //搜索处理
+        if (!StringUtils.isEmpty(productListReq.getKeyword())){
+            String keyword = new StringBuilder().append("%").append(productListReq.getKeyword()).append("%").toString();
+            productListQuery.setKeyword(keyword);
+        }
+        //目录处理 目录下的子目录一并处理
+        if (productListReq.getCategoryId() != null){
+            List<CategoryVO> categoryVOList = categoryService.listCategoryForCustomer(productListReq.getCategoryId());
+            ArrayList<Integer> categoryIds = new ArrayList<>();
+            categoryIds.add(productListReq.getCategoryId());
+            getCategoryIds(categoryVOList, categoryIds);
+            productListQuery.setCategoryIds(categoryIds);
+        }
+        //排序
+        String orderBy = productListReq.getOrderBy();
+        if (Constant.ProductListOrderBy.PRICE_ASC_DESC.contains(orderBy)){
+            PageHelper.startPage(productListReq.getPageNum(), productListReq.getPageSize(), orderBy);
+        } else {
+            PageHelper.startPage(productListReq.getPageNum(), productListReq.getPageSize());
+        }
+
+        List<Product> productList = productMapper.selectList(productListQuery);
+        PageInfo pageInfo = new PageInfo(productList);
+        return pageInfo;
+    }
+
+    private void getCategoryIds(List<CategoryVO> categoryVOList, ArrayList<Integer> categoryIds){
+        for (int i = 0; i < categoryVOList.size(); i++) {
+            CategoryVO categoryVO = categoryVOList.get(i);
+            if(categoryVO != null){
+                categoryIds.add(categoryVO.getId());
+                getCategoryIds(categoryVO.getChildCategory(), categoryIds);
+            }
+        }
     }
 
 }

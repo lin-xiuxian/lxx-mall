@@ -3,6 +3,7 @@ package com.lxx.mall.service;
 import com.github.pagehelper.PageInfo;
 import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.request.AddProductReq;
+import com.lxx.mall.model.request.ProductListReq;
 
 /**
  * @author 林修贤
@@ -21,4 +22,6 @@ public interface ProductService {
     PageInfo listForAdmin(Integer pageNum, Integer pageSize);
 
     Product detail(Integer id);
+
+    PageInfo list(ProductListReq productListReq);
 }
