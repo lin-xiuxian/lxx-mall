@@ -1,5 +1,7 @@
 package com.lxx.mall.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.dao.ProductMapper;
@@ -9,6 +11,8 @@ import com.lxx.mall.service.ProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author 林修贤
@@ -62,6 +66,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void batchUpdateSellStatus(Integer[] ids, Integer sellStatus){
         productMapper.batchUpdateSellStatus(ids, sellStatus);
+    }
+
+    @Override
+    public PageInfo listForAdmin(Integer pageNum, Integer pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<Product> products = productMapper.selectListForAdmin();
+        PageInfo pageInfo = new PageInfo(products);
+        return pageInfo;
     }
 
 }
