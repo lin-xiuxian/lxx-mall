@@ -74,4 +74,48 @@ public class CartServiceImpl implements CartService {
             throw new LxxMallException(LxxMallExceptionEnum.NOT_ENOUGH);
         }
     }
+
+    @Override
+    public List<CartVO> update(Integer userId, Integer productId, Integer count){
+        validProduct(productId, count);
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if(cart == null) {
+            //商品之前不在购物车里, 无法更新, 只能更新已有商品
+             throw new LxxMallException(LxxMallExceptionEnum.UPDATE_FAILED);
+        } else {
+            //商品已存在购物车里则 更新数量
+            Cart cartNew = new Cart();
+            cartNew.setQuantity(count);
+            cartNew.setId(cart.getId());
+            cartNew.setProductId(cart.getProductId());
+            cartNew.setUserId(cart.getUserId());
+            cartNew.setSelected(Constant.Cart.CHECKED);
+            cartMapper.updateByPrimaryKeySelective(cartNew);
+        }
+        return this.list(userId);
+    }
+
+    @Override
+    public List<CartVO> delete(Integer userId, Integer productId){
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if(cart == null) {
+            //商品之前不在购物车里, 无法删除
+            throw new LxxMallException(LxxMallExceptionEnum.DELETE_FAILED);
+        } else {
+            //商品已存在购物车里则 可以删除
+            cartMapper.deleteByPrimaryKey(cart.getId());
+        }
+        return this.list(userId);
+    }
+
+    public List<CartVO> selectOrNot(Integer userId, Integer productId, Integer selected){
+        Cart cart = cartMapper.selectCartByUserIdAndProductId(userId, productId);
+        if(cart == null) {
+            //商品之前不在购物车里, 无法选择
+            throw new LxxMallException(LxxMallExceptionEnum.UPDATE_FAILED);
+        } else {
+            //商品已存在购物车里则 可以删除
+            cartMapper.deleteByPrimaryKey(cart.getId());
+        }
+    }
 }
