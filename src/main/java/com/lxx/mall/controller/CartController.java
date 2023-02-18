@@ -62,7 +62,16 @@ public class CartController {
     public ApiRestResponse select(@RequestParam Integer productId, @RequestParam Integer selected){
         //不能传入 userId ， cartId 否则可以删除别人购物车
         User user = UserFilter.currentUser;
-        List<CartVO> cartVOList = cartService.delete(user.getId(), productId);
+        List<CartVO> cartVOList = cartService.selectOrNot(user.getId(), productId, selected);
+        return ApiRestResponse.success(cartVOList);
+    }
+
+    @PostMapping("/selectAll")
+    @ApiOperation("全选/全不选购物车的商品")
+    public ApiRestResponse selectAll(@RequestParam Integer selected){
+        //不能传入 userId ， cartId 否则可以删除别人购物车
+        User user = UserFilter.currentUser;
+        List<CartVO> cartVOList = cartService.selectAllOrNot(user.getId(), selected);
         return ApiRestResponse.success(cartVOList);
     }
 
