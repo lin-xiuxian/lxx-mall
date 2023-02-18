@@ -2,6 +2,7 @@ package com.lxx.mall.model.dao;
 
 import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.query.ProductListQuery;
+import com.lxx.mall.model.vo.CartVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +29,4 @@ public interface ProductMapper {
     List<Product> selectListForAdmin();
 
     List<Product> selectList(@Param("query")ProductListQuery query);
-
 }
