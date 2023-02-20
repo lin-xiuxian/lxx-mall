@@ -24,6 +24,8 @@ public enum LxxMallExceptionEnum {
     NOT_ENOUGH(10016, "商品库存不足"),
     CART_EMPTY(10017, "购物车为空"),
     NO_ENUM(10018, "未找到对应的枚举类"),
+    NO_ORDER(10019, "订单不存在"),
+    NOT_YOUR_ORDER(1020, "订单不属于你"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

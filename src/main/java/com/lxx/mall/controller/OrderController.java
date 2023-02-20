@@ -2,13 +2,11 @@ package com.lxx.mall.controller;
 
 import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.model.request.CreateOrderReq;
+import com.lxx.mall.model.vo.OrderVO;
 import com.lxx.mall.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 林修贤
@@ -27,5 +25,12 @@ public class OrderController {
     public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq){
         String orderNo = orderService.create(createOrderReq);
         return ApiRestResponse.success(orderNo);
+    }
+
+    @GetMapping("/detail")
+    @ApiOperation("前台订单详情")
+    public ApiRestResponse detail(@RequestParam String orderNo){
+        OrderVO orderVO = orderService.detail(orderNo);
+        return ApiRestResponse.success(orderVO);
     }
 }

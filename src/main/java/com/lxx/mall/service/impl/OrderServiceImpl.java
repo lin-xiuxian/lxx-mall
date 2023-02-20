@@ -13,9 +13,12 @@ import com.lxx.mall.model.pojo.OrderItem;
 import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.request.CreateOrderReq;
 import com.lxx.mall.model.vo.CartVO;
+import com.lxx.mall.model.vo.OrderItemVO;
+import com.lxx.mall.model.vo.OrderVO;
 import com.lxx.mall.service.CartService;
 import com.lxx.mall.service.OrderService;
 import com.lxx.mall.util.OrderCodeFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -156,5 +159,39 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
+    }
+
+    @Override
+    public OrderVO detail(String orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        //订单不存在, 报错
+        if(order == null){
+            throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
+        }
+        //订单存在，判断所属
+        Integer userId = UserFilter.currentUser.getId();
+        if(!order.getUserId().equals(userId)){
+            throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        OrderVO orderVO = getOrderVO(order);
+        return orderVO;
+    }
+
+    private OrderVO getOrderVO(Order order) {
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(order, orderVO);
+        // 获取订单对应的 orderItemVOList
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
+        List<OrderItemVO> orderItemVOList = new ArrayList<>();
+        for (int i = 0; i < orderItemList.size(); i++) {
+            OrderItem orderItem = orderItemList.get(i);
+            OrderItemVO orderItemVO = new OrderItemVO();
+            BeanUtils.copyProperties(orderItem, orderItemVO);
+            orderItemVOList.add(orderItemVO);
+        }
+        orderVO.setOrderItemVOList(orderItemVOList);
+        orderVO.setOrderStatusName(Constant.OrderStatusEnum.codeOf(orderVO.getOrderStatus()).getValue());
+        return orderVO;
     }
 }

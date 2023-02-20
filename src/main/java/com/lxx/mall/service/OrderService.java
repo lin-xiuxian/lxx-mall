@@ -1,6 +1,7 @@
 package com.lxx.mall.service;
 
 import com.lxx.mall.model.request.CreateOrderReq;
+import com.lxx.mall.model.vo.OrderVO;
 
 /**
  * @author 林修贤
@@ -9,4 +10,6 @@ import com.lxx.mall.model.request.CreateOrderReq;
  */
 public interface OrderService {
     String create(CreateOrderReq createOrderReq);
+
+    OrderVO detail(String orderNo);
 }
