@@ -20,6 +20,7 @@ import com.lxx.mall.model.vo.OrderItemVO;
 import com.lxx.mall.model.vo.OrderVO;
 import com.lxx.mall.service.CartService;
 import com.lxx.mall.service.OrderService;
+import com.lxx.mall.service.UserService;
 import com.lxx.mall.util.OrderCodeFactory;
 import com.lxx.mall.util.QRCodeGenerator;
 import org.springframework.beans.BeanUtils;
@@ -60,6 +61,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemMapper orderItemMapper;
 
+    @Autowired
+    UserService userService;
     @Value("${file.upload.ip}")
     String ip;
     //数据库事务
@@ -292,5 +295,42 @@ public class OrderServiceImpl implements OrderService {
         PageInfo pageInfo = new PageInfo<>(orderList);
         pageInfo.setList(orderVOList);
         return pageInfo;
+    }
+
+    @Override
+    public void deliver(String orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        //查不到订单报错
+        if(order == null){
+            throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
+        }
+        if (order.getOrderStatus().equals(Constant.OrderStatusEnum.PAID.getCode())){
+            order.setOrderStatus(Constant.OrderStatusEnum.DELIVERED.getCode());
+            order.setDeliveryTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+    }
+
+    @Override
+    public void finish(String orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        //查不到订单报错
+        if(order == null){
+            throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
+        }
+        //普通用户校验订单所属
+        if (!userService.checkAdminRole(UserFilter.currentUser) && !order.getUserId().equals(UserFilter.currentUser.getId())) {
+            throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+        //发货后可以完结订单
+        if (order.getOrderStatus().equals(Constant.OrderStatusEnum.DELIVERED.getCode())){
+            order.setOrderStatus(Constant.OrderStatusEnum.FINISHED.getCode());
+            order.setEndTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
     }
 }
