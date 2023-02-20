@@ -41,10 +41,11 @@ public class OrderController {
         return ApiRestResponse.success();
     }
 
-    @PostMapping("/qrcode")
-    @ApiOperation("生成支付二维码")
-    public ApiRestResponse qrcode(@RequestParam String orderNo){
-        String pngAddress = orderService.qrcode(orderNo);
-        return ApiRestResponse.success(pngAddress);
+    @PostMapping("/pay")
+    @ApiOperation("支付接口")
+    public ApiRestResponse pay(@RequestParam String orderNo){
+        orderService.pay(orderNo);
+        return ApiRestResponse.success();
     }
+
 }

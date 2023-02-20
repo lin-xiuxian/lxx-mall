@@ -241,7 +241,23 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
         }
 
-        String pngAddress = "http://" + address + "/images" + orderNo + ".png";
+        String pngAddress = "http://" + address + "/images/" + orderNo + ".png";
         return pngAddress;
+    }
+
+    @Override
+    public void pay(String orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        //查不到订单报错
+        if(order == null){
+            throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
+        }
+        if (order.getOrderStatus().equals(Constant.OrderStatusEnum.NOT_PAID.getCode())){
+            order.setOrderStatus(Constant.OrderStatusEnum.PAID.getCode());
+            order.setPayTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
     }
 }
