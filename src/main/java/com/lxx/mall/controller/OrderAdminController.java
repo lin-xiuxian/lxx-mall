@@ -26,6 +26,7 @@ public class OrderAdminController {
     @GetMapping("/list")
     @ApiOperation("后台订单列表")
     public ApiRestResponse listForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
-        return null;
+        PageInfo pageInfo = orderService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 }
