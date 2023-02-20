@@ -12,4 +12,6 @@ public interface OrderService {
     String create(CreateOrderReq createOrderReq);
 
     OrderVO detail(String orderNo);
+
+    void cancel(String orderNo);
 }

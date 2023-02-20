@@ -33,4 +33,11 @@ public class OrderController {
         OrderVO orderVO = orderService.detail(orderNo);
         return ApiRestResponse.success(orderVO);
     }
+
+    @PostMapping("/cancel")
+    @ApiOperation("前台取消订单详情")
+    public ApiRestResponse cancel(@RequestParam String orderNo){
+        orderService.cancel(orderNo);
+        return ApiRestResponse.success();
+    }
 }

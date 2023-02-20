@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -193,5 +194,26 @@ public class OrderServiceImpl implements OrderService {
         orderVO.setOrderItemVOList(orderItemVOList);
         orderVO.setOrderStatusName(Constant.OrderStatusEnum.codeOf(orderVO.getOrderStatus()).getValue());
         return orderVO;
+    }
+
+    @Override
+    public void cancel(String orderNo){
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        //查不到订单报错
+        if(order == null){
+            throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
+        }
+        //订单存在，判断所属
+        Integer userId = UserFilter.currentUser.getId();
+        if(!order.getUserId().equals(userId)){
+            throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
+        }
+        if(order.getOrderStatus().equals(Constant.OrderStatusEnum.NOT_PAID.getCode())){
+            order.setOrderStatus(Constant.OrderStatusEnum.CANCELED.getCode());
+            order.setEndTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+        }
     }
 }
