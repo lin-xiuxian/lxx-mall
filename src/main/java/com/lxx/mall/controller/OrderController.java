@@ -1,5 +1,6 @@
 package com.lxx.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.model.request.CreateOrderReq;
 import com.lxx.mall.model.vo.OrderVO;
@@ -32,6 +33,13 @@ public class OrderController {
     public ApiRestResponse detail(@RequestParam String orderNo){
         OrderVO orderVO = orderService.detail(orderNo);
         return ApiRestResponse.success(orderVO);
+    }
+
+    @GetMapping("/list")
+    @ApiOperation("前台订单列表")
+    public ApiRestResponse list(@RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        PageInfo pageInfo = orderService.listForCustomer(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 
     @PostMapping("/cancel")
