@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @ApiOperation("商品列表")
-    @PostMapping("/product/list")
+    @GetMapping("/product/list")
     public ApiRestResponse list(ProductListReq productListReq){
         PageInfo list = productService.list(productListReq);
         return ApiRestResponse.success(list);

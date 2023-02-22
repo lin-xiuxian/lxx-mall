@@ -65,7 +65,7 @@ public class UserController {
      * @return
      * @throws LxxMallException
      */
-    @PostMapping("/login")
+    @GetMapping("/login")
     @ResponseBody
     public ApiRestResponse login(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws LxxMallException {
         if (StringUtils.isNullOrEmpty(userName)) {
@@ -122,7 +122,7 @@ public class UserController {
      * @return
      * @throws LxxMallException
      */
-    @PostMapping("/adminLogin")
+    @GetMapping("/adminLogin")
     @ResponseBody
     public ApiRestResponse adminLogin(@RequestParam("userName") String userName, @RequestParam("password") String password, HttpSession session) throws LxxMallException {
         if (StringUtils.isNullOrEmpty(userName)) {

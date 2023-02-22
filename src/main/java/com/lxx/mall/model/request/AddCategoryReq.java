@@ -55,4 +55,14 @@ public class AddCategoryReq {
     public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
     }
+
+    @Override
+    public String toString() {
+        return "AddCategoryReq{" +
+                "name='" + name + '\'' +
+                ", Type=" + Type +
+                ", parentId=" + parentId +
+                ", orderNum=" + orderNum +
+                '}';
+    }
 }
