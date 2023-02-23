@@ -25,7 +25,7 @@ public class ProductController {
     ProductService productService;
 
     @ApiOperation("商品详情")
-    @PostMapping("/product/detail")
+    @GetMapping("/product/detail")
     public ApiRestResponse detail(@RequestParam Integer id){
         Product product = productService.detail(id);
         return ApiRestResponse.success(product);
