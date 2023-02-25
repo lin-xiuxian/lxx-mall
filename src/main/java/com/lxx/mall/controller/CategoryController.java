@@ -38,20 +38,8 @@ public class CategoryController {
     @PostMapping("/admin/category/add")
     @ResponseBody
     public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq){
-
-        User currentUser = (User)session.getAttribute(Constant.LXX_MALL_USER);
-        if (currentUser == null){
-            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_LOGIN);
-        }
-        //校验是否是管理员
-        boolean adminRole = userService.checkAdminRole(currentUser);
-        if (adminRole){
-            //是管理员执行操作
-            categoryService.add(addCategoryReq);
-            return ApiRestResponse.success();
-        } else {
-            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_ADMIN);
-        }
+        categoryService.add(addCategoryReq);
+        return ApiRestResponse.success();
     }
 
     @ApiOperation("后台更新目录")

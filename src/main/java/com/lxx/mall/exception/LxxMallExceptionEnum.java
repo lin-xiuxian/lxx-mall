@@ -33,6 +33,8 @@ public enum LxxMallExceptionEnum {
     NEED_EMAIL_ADDRESS(1025, "邮箱地址不能为空"),
     NEED_VERIFICATION_CODE(1026, "验证码不能为空"),
     WRONG_VERIFICATION_CODE(1027, "验证码错误"),
+    TOKEN_EXPIRED(1028, "token过期"),
+    TOKEN_WRONG(1029, "token解析失败"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

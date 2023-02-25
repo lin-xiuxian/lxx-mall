@@ -25,6 +25,7 @@ public class UserFilterConfig {
 
         filterRegistrationBean.addUrlPatterns("/cart/*");
         filterRegistrationBean.addUrlPatterns("/order/*");
+        filterRegistrationBean.addUrlPatterns("/user/update");
         filterRegistrationBean.setName("userFilterConf");
         return filterRegistrationBean;
     }
