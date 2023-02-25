@@ -30,6 +30,9 @@ public enum LxxMallExceptionEnum {
     WRONG_EMAIL(1022, "非法邮件地址"),
     EMAIL_ALREADY_BEEN_REGISTERED(1023, "邮箱已注册"),
     EMAIL_ALREADY_BEEN_SEND(1024, "邮件已发送，若无法收到，请稍后重试"),
+    NEED_EMAIL_ADDRESS(1025, "邮箱地址不能为空"),
+    NEED_VERIFICATION_CODE(1026, "验证码不能为空"),
+    WRONG_VERIFICATION_CODE(1027, "验证码错误"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

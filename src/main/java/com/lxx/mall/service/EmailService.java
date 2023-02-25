@@ -9,4 +9,6 @@ public interface EmailService {
     void sendSimpleMessage(String to, String subject, String text);
 
     boolean savaEmailToRedis(String emailAddress, String verificationCode);
+
+    Boolean checkEmailAndCode(String emailAddress, String verificationCode);
 }

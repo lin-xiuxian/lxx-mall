@@ -48,7 +48,7 @@ public class UserController {
      */
     @PostMapping("/register")
     @ResponseBody
-    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password) throws LxxMallException {
+    public ApiRestResponse register(@RequestParam("userName") String userName, @RequestParam("password") String password, @RequestParam("emailAddress") String emailAddress, @RequestParam("verificationCode") String verificationCode) throws LxxMallException {
         if (StringUtils.isNullOrEmpty(userName)) {
             return ApiRestResponse.error(LxxMallExceptionEnum.NEED_USER_NAME);
         }
@@ -59,7 +59,22 @@ public class UserController {
         if (password.length() < 8) {
             return ApiRestResponse.error(LxxMallExceptionEnum.PASSWORD_TOO_SHORT);
         }
-        userService.register(userName, password);
+        if (StringUtils.isNullOrEmpty(emailAddress)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_EMAIL_ADDRESS);
+        }
+        if (StringUtils.isNullOrEmpty(verificationCode)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_VERIFICATION_CODE);
+        }
+        //检查邮件地址是否注册
+        boolean emailPass = userService.checkEmailRegistered(emailAddress);
+        if (!emailPass) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.EMAIL_ALREADY_BEEN_REGISTERED);
+        }
+        Boolean passEmailAndCode = emailService.checkEmailAndCode(emailAddress, verificationCode);
+        if(!passEmailAndCode){
+            return ApiRestResponse.error(LxxMallExceptionEnum.WRONG_VERIFICATION_CODE);
+        }
+        userService.register(userName, password, emailAddress);
         return ApiRestResponse.success();
     }
 

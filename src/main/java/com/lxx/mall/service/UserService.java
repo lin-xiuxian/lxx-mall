@@ -12,8 +12,7 @@ import org.springframework.stereotype.Service;
 public interface UserService {
     User getUser();
 
-    void register(String userName, String password) throws LxxMallException;
-
+    void register(String userName, String password, String emailAddress) throws LxxMallException;
 
     User login(String userName, String password) throws LxxMallException;
 
