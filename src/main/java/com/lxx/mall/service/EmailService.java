@@ -7,4 +7,6 @@ package com.lxx.mall.service;
  */
 public interface EmailService {
     void sendSimpleMessage(String to, String subject, String text);
+
+    boolean savaEmailToRedis(String emailAddress, String verificationCode);
 }

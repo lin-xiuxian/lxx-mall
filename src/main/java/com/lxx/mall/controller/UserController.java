@@ -160,10 +160,15 @@ public class UserController {
             if (!emailPass){
                 return ApiRestResponse.error(LxxMallExceptionEnum.EMAIL_ALREADY_BEEN_REGISTERED);
             } else {
-                emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是: ");
-                return ApiRestResponse.success();
+                String verificationCode = EmailUtil.genVerificationCode();
+                boolean result = emailService.savaEmailToRedis(emailAddress, verificationCode);
+                if (result){
+                    emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是: " + verificationCode);
+                    return ApiRestResponse.success();
+                } else {
+                    return ApiRestResponse.error(LxxMallExceptionEnum.EMAIL_ALREADY_BEEN_SEND);
+                }
             }
-
         } else {
             return ApiRestResponse.error(LxxMallExceptionEnum.WRONG_EMAIL);
         }

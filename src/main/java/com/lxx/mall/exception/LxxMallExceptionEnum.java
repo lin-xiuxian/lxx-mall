@@ -29,6 +29,7 @@ public enum LxxMallExceptionEnum {
     WRONG_ORDER_STATUS(1021, "订单状态不符"),
     WRONG_EMAIL(1022, "非法邮件地址"),
     EMAIL_ALREADY_BEEN_REGISTERED(1023, "邮箱已注册"),
+    EMAIL_ALREADY_BEEN_SEND(1024, "邮件已发送，若无法收到，请稍后重试"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码
