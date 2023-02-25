@@ -20,4 +20,6 @@ public interface UserService {
     void updateInformation(User user) throws LxxMallException;
 
     boolean checkAdminRole(User user);
+
+    boolean checkEmailRegistered(String emailAddress);
 }

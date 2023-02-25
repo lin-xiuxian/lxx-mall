@@ -22,10 +22,6 @@
             <name>aliyun</name>
             <url>https://maven.aliyun.com/repository/public</url>
         </repository>
-        <repository>
-            <id>huaweicloud</id>
-            <url>https://mirrors.huaweicloud.com/repository/maven/</url>
-        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -123,7 +119,6 @@
             <artifactId>javase</artifactId>
             <version>3.3.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>

@@ -18,6 +18,8 @@ public class Constant {
 
     public static final String LXX_MALL_USER = "lxx_mall_user";
     public static final String SALT = "ig(s*'/2few";
+    public static final String EMAIL_SUBJECT = "您的验证码";
+    public static final String EMAIL_FROM = "2625453652@qq.com";
 
 
     public static String FILE_UPLOAD_DIR;

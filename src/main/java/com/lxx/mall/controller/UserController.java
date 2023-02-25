@@ -5,8 +5,11 @@ import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.pojo.User;
+import com.lxx.mall.service.EmailService;
 import com.lxx.mall.service.UserService;
+import com.lxx.mall.util.EmailUtil;
 import com.mysql.cj.util.StringUtils;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Email;
 
 /**
  * @author 林修贤
@@ -27,6 +31,8 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    EmailService emailService;
     @GetMapping("/test")
     @ResponseBody
     public User personalPage() {
@@ -142,6 +148,24 @@ public class UserController {
         } else {
             return ApiRestResponse.error(LxxMallExceptionEnum.NEED_ADMIN);
         }
+    }
 
+    @PostMapping("/user/sendEmail")
+    @ResponseBody
+    public ApiRestResponse sendEmail(@RequestParam("emailAddress") String emailAddress){
+        //检查邮件地址是否有效， 检查是否注册
+        boolean validEmailAddress = EmailUtil.isValidEmailAddress(emailAddress);
+        if (validEmailAddress) {
+            boolean emailPass = userService.checkEmailRegistered(emailAddress);
+            if (!emailPass){
+                return ApiRestResponse.error(LxxMallExceptionEnum.EMAIL_ALREADY_BEEN_REGISTERED);
+            } else {
+                emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是: ");
+                return ApiRestResponse.success();
+            }
+
+        } else {
+            return ApiRestResponse.error(LxxMallExceptionEnum.WRONG_EMAIL);
+        }
     }
 }

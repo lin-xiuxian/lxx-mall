@@ -27,6 +27,8 @@ public enum LxxMallExceptionEnum {
     NO_ORDER(10019, "订单不存在"),
     NOT_YOUR_ORDER(1020, "订单不属于你"),
     WRONG_ORDER_STATUS(1021, "订单状态不符"),
+    WRONG_EMAIL(1022, "非法邮件地址"),
+    EMAIL_ALREADY_BEEN_REGISTERED(1023, "邮箱已注册"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码

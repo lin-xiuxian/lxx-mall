@@ -78,4 +78,12 @@ public class UserServiceImpl implements UserService {
         return user.getRole().equals(2);
     }
 
+    @Override
+    public boolean checkEmailRegistered(String emailAddress) {
+        User user = userMapper.selectOneByEmailAddress(emailAddress);
+        if (user != null){
+            return false;
+        }
+        return true;
+    }
 }
