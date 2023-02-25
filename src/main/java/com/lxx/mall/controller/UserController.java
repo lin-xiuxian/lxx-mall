@@ -1,5 +1,7 @@
 package com.lxx.mall.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallException;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Email;
+import java.util.Date;
 
 /**
  * @author 林修贤
@@ -187,5 +190,27 @@ public class UserController {
         } else {
             return ApiRestResponse.error(LxxMallExceptionEnum.WRONG_EMAIL);
         }
+    }
+
+    @GetMapping("/loginWithJWT")
+    @ResponseBody
+    public ApiRestResponse loginWithJWT(@RequestParam("userName") String userName, @RequestParam("password") String password){
+        if (StringUtils.isNullOrEmpty(userName)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isNullOrEmpty(password)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        //保存用户信息时不保存密码
+        user.setPassword(null);
+        Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
+        String token = JWT.create()
+                .withClaim(Constant.USER_NAME, user.getUsername())
+                .withClaim(Constant.USER_ID, user.getId())
+                .withClaim(Constant.USER_ROLE, user.getRole())
+                .withExpiresAt(new Date(System.currentTimeMillis() + Constant.EXPIRE_TIME))
+                .sign(algorithm);
+        return ApiRestResponse.success(token);
     }
 }
