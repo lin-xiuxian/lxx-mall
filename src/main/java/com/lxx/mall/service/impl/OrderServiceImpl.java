@@ -63,8 +63,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     UserService userService;
-    @Value("${file.upload.ip}")
-    String ip;
+    @Value("${file.upload.uri}")
+    String uri;
     //数据库事务
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -257,7 +257,7 @@ public class OrderServiceImpl implements OrderService {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        String address = ip + ":" + request.getLocalPort();
+        String address =  uri;
         String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
         try {
             QRCodeGenerator.generateQRCodeImage(payUrl, 350, 350, Constant.FILE_UPLOAD_DIR + orderNo + ".png");
