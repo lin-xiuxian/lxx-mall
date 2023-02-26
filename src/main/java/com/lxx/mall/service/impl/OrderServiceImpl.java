@@ -248,7 +248,7 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new LxxMallException(LxxMallExceptionEnum.CANCEL_WRONG_ORDER_STATUS);
         }
     }
 
@@ -283,7 +283,7 @@ public class OrderServiceImpl implements OrderService {
             order.setPayTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new LxxMallException(LxxMallExceptionEnum.PAY_WRONG_ORDER_STATUS);
         }
     }
 
@@ -309,7 +309,7 @@ public class OrderServiceImpl implements OrderService {
             order.setDeliveryTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new LxxMallException(LxxMallExceptionEnum.DELIVERY_WRONG_ORDER_STATUS);
         }
     }
 
@@ -330,7 +330,7 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new LxxMallException(LxxMallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new LxxMallException(LxxMallExceptionEnum.FINISH_WRONG_ORDER_STATUS);
         }
     }
 }

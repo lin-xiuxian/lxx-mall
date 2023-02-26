@@ -37,6 +37,10 @@ public enum LxxMallExceptionEnum {
     TOKEN_WRONG(1029, "token解析失败"),
     PRICE_TOO_LOW(1030, "价格太低"),
     STOCK_TOO_MANY(1031, "库存不能大于10000"),
+    CANCEL_WRONG_ORDER_STATUS(1032, "订单状态错误，付款后不支持取消订单"),
+    PAY_WRONG_ORDER_STATUS(1032, "订单状态错误，用户已付款"),
+    DELIVERY_WRONG_ORDER_STATUS(1032, "订单状态错误，仅能在付款后配送"),
+    FINISH_WRONG_ORDER_STATUS(1032, "订单状态错误，仅能在发货后完结订单"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码
