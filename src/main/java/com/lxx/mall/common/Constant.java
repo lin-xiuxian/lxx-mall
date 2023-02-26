@@ -20,7 +20,9 @@ public class Constant {
     public static final String SALT = "ig(s*'/2few";
     public static final String EMAIL_SUBJECT = "您的验证码";
     public static final String EMAIL_FROM = "2625453652@qq.com";
-
+    public static final Integer IMAGE_SIZE = 400;
+    public static final Float IMAGE_OPACITY = 0.5f;
+    public static final String WATER_MARK_JPG = "watermark.jpg";
 
     public static String FILE_UPLOAD_DIR;
 

@@ -11,12 +11,16 @@ import com.lxx.mall.model.request.UpdateProductReq;
 import com.lxx.mall.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
+import org.apache.poi.hpsf.Thumbnail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
@@ -50,16 +54,7 @@ public class ProductAdminController {
         //创建文件
         File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
         File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
-        if (!fileDirectory.exists()) {
-            if (!fileDirectory.mkdir()){
-                throw new LxxMallException(LxxMallExceptionEnum.MKDIR_FAILED);
-            }
-        }
-        try {
-            file.transferTo(destFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createFile(fileDirectory, file, destFile);
         try {
             return ApiRestResponse.success( getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFileName);
         } catch (URISyntaxException e) {
@@ -119,19 +114,43 @@ public class ProductAdminController {
         //创建文件
         File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
         File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
-        if(!fileDirectory.exists()){
-            if(!fileDirectory.mkdir()){
+        createFile(fileDirectory, multipartFile, destFile);
+
+        productService.addProductByExcel(destFile);
+        return ApiRestResponse.success();
+    }
+
+    @PostMapping("/admin/upload/image")
+    public ApiRestResponse uploadImage(HttpServletRequest httpServletRequest, @RequestParam("file")MultipartFile file) throws IOException {
+        String fileName = file.getOriginalFilename();
+        //获取文件后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        //生成文件名称 UUID
+        UUID uuid = UUID.randomUUID();
+        String newFileName = uuid.toString() + suffixName;
+        //创建文件
+        File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
+        File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
+        createFile(fileDirectory, file, destFile);
+        Thumbnails.of(destFile).size(Constant.IMAGE_SIZE, Constant.IMAGE_SIZE).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(Constant.FILE_UPLOAD_DIR + Constant.WATER_MARK_JPG)), Constant.IMAGE_OPACITY).toFile(new File(Constant.FILE_UPLOAD_DIR + newFileName));
+        try {
+            return ApiRestResponse.success( getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFileName);
+        } catch (URISyntaxException e) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.UPLOAD_FAILED);
+        }
+    }
+
+    private void createFile(File fileDirectory, MultipartFile file, File destFile) {
+        if (!fileDirectory.exists()) {
+            if (!fileDirectory.mkdir()){
                 throw new LxxMallException(LxxMallExceptionEnum.MKDIR_FAILED);
             }
         }
         try {
-            multipartFile.transferTo(destFile);
+            file.transferTo(destFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        productService.addProductByExcel(destFile);
-        return ApiRestResponse.success();
     }
 
 }
