@@ -2,7 +2,11 @@ package com.lxx.mall.service;
 
 import com.github.pagehelper.PageInfo;
 import com.lxx.mall.model.request.CreateOrderReq;
+import com.lxx.mall.model.vo.OrderStatisticsVO;
 import com.lxx.mall.model.vo.OrderVO;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author 林修贤
@@ -27,4 +31,6 @@ public interface OrderService {
     void deliver(String orderNo);
 
     void finish(String orderNo);
+
+    List<OrderStatisticsVO> statistics(Date startDate, Date endDate);
 }

@@ -14,9 +14,11 @@ import com.lxx.mall.model.dao.ProductMapper;
 import com.lxx.mall.model.pojo.Order;
 import com.lxx.mall.model.pojo.OrderItem;
 import com.lxx.mall.model.pojo.Product;
+import com.lxx.mall.model.query.OrderStatisticsQuery;
 import com.lxx.mall.model.request.CreateOrderReq;
 import com.lxx.mall.model.vo.CartVO;
 import com.lxx.mall.model.vo.OrderItemVO;
+import com.lxx.mall.model.vo.OrderStatisticsVO;
 import com.lxx.mall.model.vo.OrderVO;
 import com.lxx.mall.service.CartService;
 import com.lxx.mall.service.OrderService;
@@ -332,5 +334,14 @@ public class OrderServiceImpl implements OrderService {
         } else {
             throw new LxxMallException(LxxMallExceptionEnum.FINISH_WRONG_ORDER_STATUS);
         }
+    }
+
+    @Override
+    public List<OrderStatisticsVO> statistics(Date startDate, Date endDate){
+        OrderStatisticsQuery orderStatisticsQuery = new OrderStatisticsQuery();
+        orderStatisticsQuery.setStartDate(startDate);
+        orderStatisticsQuery.setEndDate(endDate);
+        List<OrderStatisticsVO> orderStatisticsVOS = orderMapper.selectOrderStatistics(orderStatisticsQuery);
+        return orderStatisticsVOS;
     }
 }
