@@ -107,4 +107,31 @@ public class ProductAdminController {
         PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
         return ApiRestResponse.success(pageInfo);
     }
+
+    @ApiOperation("后台批量上传商品接口")
+    @PostMapping("/admin/upload/product")
+    public ApiRestResponse uploadProduct(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        String fileName = multipartFile.getOriginalFilename();
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        //生成 uuid
+        UUID uuid = UUID.randomUUID();
+        String newFileName = uuid + suffixName;
+        //创建文件
+        File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
+        File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
+        if(!fileDirectory.exists()){
+            if(!fileDirectory.mkdir()){
+                throw new LxxMallException(LxxMallExceptionEnum.MKDIR_FAILED);
+            }
+        }
+        try {
+            multipartFile.transferTo(destFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        productService.addProductByExcel(destFile);
+        return ApiRestResponse.success();
+    }
+
 }

@@ -5,6 +5,9 @@ import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.request.AddProductReq;
 import com.lxx.mall.model.request.ProductListReq;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * @author 林修贤
  * @date 2023/2/14
@@ -24,4 +27,6 @@ public interface ProductService {
     Product detail(Integer id);
 
     PageInfo list(ProductListReq productListReq);
+
+    void addProductByExcel(File destFile) throws IOException;
 }
