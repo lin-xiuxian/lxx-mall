@@ -3,6 +3,7 @@ package com.lxx.mall.controller;
 import com.github.pagehelper.PageInfo;
 import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.common.Constant;
+import com.lxx.mall.common.ValidList;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.pojo.Product;
@@ -13,10 +14,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
+import org.apache.ibatis.annotations.Update;
 import org.apache.poi.hpsf.Thumbnail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,6 +39,7 @@ import java.util.UUID;
  * @description 后台商品管理
  */
 @RestController
+@Validated
 public class ProductAdminController {
     @Autowired
     ProductService productService;
@@ -77,7 +82,6 @@ public class ProductAdminController {
     public ApiRestResponse updateProduct(@Valid @RequestBody UpdateProductReq updateProductReq){
         Product product = new Product();
         BeanUtils.copyProperties(updateProductReq, product);
-
         productService.update(product);
         return ApiRestResponse.success();
     }
@@ -153,4 +157,47 @@ public class ProductAdminController {
         }
     }
 
+    @ApiOperation("后台批量更新商品 手动校验")
+    @PostMapping("/admin/product/batchUpdate1")
+    public ApiRestResponse batchUpdateProduct(@Valid @RequestBody List<UpdateProductReq> updateProductReqList){
+        for (int i = 0; i < updateProductReqList.size(); i++) {
+            UpdateProductReq updateProductReq = updateProductReqList.get(i);
+            if(updateProductReq.getPrice() < 1){
+                throw new LxxMallException(LxxMallExceptionEnum.PRICE_TOO_LOW);
+            }
+            if(updateProductReq.getStock() > 10000){
+                throw new LxxMallException(LxxMallExceptionEnum.STOCK_TOO_MANY);
+            }
+            Product product = new Product();
+            BeanUtils.copyProperties(updateProductReq, product);
+            productService.update(product);
+        }
+        return ApiRestResponse.success();
+    }
+
+    //使用 validList 验证 需要建立一个list 类实现 List接口，使 validList作为javabean 调用注解功能，java.util.List 不能作为javaBean
+    @ApiOperation("后台批量更新商品 ValidList 验证")
+    @PostMapping("/admin/product/batchUpdate2")
+    public ApiRestResponse batchUpdateProduct2(@Valid @RequestBody ValidList<UpdateProductReq> updateProductReqList){
+        for (int i = 0; i < updateProductReqList.size(); i++) {
+            UpdateProductReq updateProductReq = updateProductReqList.get(i);
+            Product product = new Product();
+            BeanUtils.copyProperties(updateProductReq, product);
+            productService.update(product);
+        }
+        return ApiRestResponse.success();
+    }
+
+    //使用 Validate 验证需要在类前 添加 @Validated 注解，改注解由 springboot 框架提供
+    @ApiOperation("后台批量更新商品 Validate 验证")
+    @PostMapping("/admin/product/batchUpdate3")
+    public ApiRestResponse batchUpdateProduct3(@Valid @RequestBody ValidList<UpdateProductReq> updateProductReqList){
+        for (int i = 0; i < updateProductReqList.size(); i++) {
+            UpdateProductReq updateProductReq = updateProductReqList.get(i);
+            Product product = new Product();
+            BeanUtils.copyProperties(updateProductReq, product);
+            productService.update(product);
+        }
+        return ApiRestResponse.success();
+    }
 }

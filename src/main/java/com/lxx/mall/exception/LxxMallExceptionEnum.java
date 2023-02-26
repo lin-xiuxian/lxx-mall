@@ -35,6 +35,8 @@ public enum LxxMallExceptionEnum {
     WRONG_VERIFICATION_CODE(1027, "验证码错误"),
     TOKEN_EXPIRED(1028, "token过期"),
     TOKEN_WRONG(1029, "token解析失败"),
+    PRICE_TOO_LOW(1030, "价格太低"),
+    STOCK_TOO_MANY(1031, "库存不能大于10000"),
     SYSTEM_ERROR(20000, "系统异常");
     /**
      * 异常码
