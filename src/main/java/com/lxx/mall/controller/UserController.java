@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Email;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author 林修贤
@@ -36,6 +37,10 @@ public class UserController {
 
     @Autowired
     EmailService emailService;
+
+    @Autowired
+    ExecutorService executorService;
+
     @GetMapping("/test")
     @ResponseBody
     public User personalPage() {
@@ -181,7 +186,12 @@ public class UserController {
                 String verificationCode = EmailUtil.genVerificationCode();
                 boolean result = emailService.savaEmailToRedis(emailAddress, verificationCode);
                 if (result){
-                    emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是: " + verificationCode);
+                    executorService.submit(new Runnable() {
+                        @Override
+                        public void run() {
+                            emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "欢迎注册，您的验证码是: " + verificationCode);
+                        }
+                    });
                     return ApiRestResponse.success();
                 } else {
                     return ApiRestResponse.error(LxxMallExceptionEnum.EMAIL_ALREADY_BEEN_SEND);
