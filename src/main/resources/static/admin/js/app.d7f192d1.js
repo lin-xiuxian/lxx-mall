@@ -357,7 +357,7 @@
             function U(e) {
                 if (-404 !== e.status) if (10007 !== e.status) {
                     if (9999 !== e.status) return e.status, e
-                } else window.location.href = "http://127.0.0.1/admin/#/"
+                } else window.location.href = "http://127.0.0.1:8083/admin/#/"
             }
 
             k().interceptors.request.use((e => e), (e => Promise.reject(e))), k().interceptors.response.use((e => e), (e => Promise.resolve(e.response))), k().defaults.withCredentials = !0;
@@ -625,10 +625,10 @@
                 te = (0, o.Wm)("a", {
                     class: "page-name-yes",
                     target: "_blank",
-                    href: "http://127.0.0.1/#/index"
+                    href: "http://127.0.0.1:8083/#/index"
                 }, "慕慕生鲜", -1),
                 ae = (0, o.Wm)("img", {width: "32", height: "32", class: "avator", src: J, alt: ""}, null, -1),
-                se = (0, o.Wm)("a", {target: "_blank", href: "http://127.0.0.1/#/index"}, "慕慕生鲜首页", -1),
+                se = (0, o.Wm)("a", {target: "_blank", href: "http://127.0.0.1:8083/#/index"}, "慕慕生鲜首页", -1),
                 oe = (0, o.Uk)("退出登陆");
 
             function le(e, t, a, s, l, r) {
@@ -654,7 +654,7 @@
                 }, computed: {}, methods: {
                     async handleCommand(e) {
                         "signout" == e && S.post(V.logout).then((e => {
-                            1e4 === e.status ? (sessionStorage.setItem("token", null), window.location.href = "http://127.0.0.1/admin/#/") : this.$message({
+                            1e4 === e.status ? (sessionStorage.setItem("token", null), window.location.href = "http://127.0.0.1:8083/admin/#/") : this.$message({
                                 type: "error",
                                 message: e.msg
                             })
@@ -674,7 +674,7 @@
             }
 
             function me(e) {
-                if (-404 !== e.status && 9999 !== e.status) return 10007 === e.status ? (console.log(window.location), void (window.location.href = "http://127.0.0.1/admin/#/")) : (e.status, e)
+                if (-404 !== e.status && 9999 !== e.status) return 10007 === e.status ? (console.log(window.location), void (window.location.href = "http://127.0.0.1:8083/admin/#/")) : (e.status, e)
             }
 
             k().interceptors.request.use((e => e), (e => Promise.reject(e))), k().interceptors.response.use((e => e), (e => Promise.resolve(e.response))), k().defaults.withCredentials = !0;

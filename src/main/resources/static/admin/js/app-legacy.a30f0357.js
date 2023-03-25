@@ -372,7 +372,7 @@
             function S(e) {
                 if (-404 !== e.status) if (10007 !== e.status) {
                     if (9999 !== e.status) return e.status, e
-                } else window.location.href = "http://127.0.0.1/admin/#/"
+                } else window.location.href = "http://127.0.0.1:8083/admin/#/"
             }
 
             C().interceptors.request.use((function (e) {
@@ -761,10 +761,10 @@
                 ae = (0, a.Wm)("a", {
                     class: "page-name-yes",
                     target: "_blank",
-                    href: "http://127.0.0.1/#/index"
+                    href: "http://127.0.0.1:8083/#/index"
                 }, "慕慕生鲜", -1),
                 oe = (0, a.Wm)("img", {width: "32", height: "32", class: "avator", src: ee, alt: ""}, null, -1),
-                ie = (0, a.Wm)("a", {target: "_blank", href: "http://127.0.0.1/#/index"}, "慕慕生鲜首页", -1),
+                ie = (0, a.Wm)("a", {target: "_blank", href: "http://127.0.0.1:8083/#/index"}, "慕慕生鲜首页", -1),
                 ue = (0, a.Uk)("退出登陆");
 
             function se(e, t, n, r, o, i) {
@@ -805,7 +805,7 @@
                                 while (1) switch (n.prev = n.next) {
                                     case 0:
                                         "signout" == e && V.post(x.logout).then((function (e) {
-                                            1e4 === e.status ? (sessionStorage.setItem("token", null), window.location.href = "http://127.0.0.1/admin/#/") : t.$message({
+                                            1e4 === e.status ? (sessionStorage.setItem("token", null), window.location.href = "http://127.0.0.1:8083/admin/#/") : t.$message({
                                                 type: "error",
                                                 message: e.msg
                                             })
@@ -830,7 +830,7 @@
             }
 
             function fe(e) {
-                if (-404 !== e.status && 9999 !== e.status) return 10007 === e.status ? (console.log(window.location), void (window.location.href = "http://127.0.0.1/admin/#/")) : (e.status, e)
+                if (-404 !== e.status && 9999 !== e.status) return 10007 === e.status ? (console.log(window.location), void (window.location.href = "http://127.0.0.1:8083/admin/#/")) : (e.status, e)
             }
 
             C().interceptors.request.use((function (e) {
