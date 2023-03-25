@@ -202,7 +202,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/loginWithJWT")
+    @GetMapping("/loginWithJwt")
     @ResponseBody
     public ApiRestResponse loginWithJWT(@RequestParam("userName") String userName, @RequestParam("password") String password){
         if (StringUtils.isNullOrEmpty(userName)) {
