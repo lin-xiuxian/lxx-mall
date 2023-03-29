@@ -224,4 +224,30 @@ public class UserController {
                 .sign(algorithm);
         return ApiRestResponse.success(token);
     }
+
+    @GetMapping("/adminLoginWithJwt")
+    @ResponseBody
+    public ApiRestResponse adminLoginWithJWT(@RequestParam("userName") String userName, @RequestParam("password") String password){
+        if (StringUtils.isNullOrEmpty(userName)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_USER_NAME);
+        }
+        if (StringUtils.isNullOrEmpty(password)) {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_PASSWORD);
+        }
+        User user = userService.login(userName, password);
+        if(userService.checkAdminRole(user)){
+            //保存用户信息时不保存密码
+            user.setPassword(null);
+            Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
+            String token = JWT.create()
+                    .withClaim(Constant.USER_NAME, user.getUsername())
+                    .withClaim(Constant.USER_ID, user.getId())
+                    .withClaim(Constant.USER_ROLE, user.getRole())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + Constant.EXPIRE_TIME))
+                    .sign(algorithm);
+            return ApiRestResponse.success(token);
+        } else {
+            return ApiRestResponse.error(LxxMallExceptionEnum.NEED_ADMIN);
+        }
+    }
 }
