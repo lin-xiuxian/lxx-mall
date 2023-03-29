@@ -38,34 +38,41 @@ public class UserFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String token = request.getHeader(Constant.JWT_TOKEN);
-        if (token == null){
-            PrintWriter out = new HttpServletResponseWrapper((HttpServletResponse) servletResponse).getWriter();
-            out.write("{\n" +
-                    "    \"status\": 10007,\n" +
-                    "    \"msg\": \"NEED_JWT_TOKEN\",\n" +
-                    "    \"data\": null\n" +
-                    "}");
-            out.flush();
-            out.close();
-            return;
-        }
-        Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
-        JWTVerifier verifier = JWT.require(algorithm).build();
 
-        try{
-            DecodedJWT jwt = verifier.verify(token);
-            currentUser = new User();
-            currentUser.setId(jwt.getClaim(Constant.USER_ID).asInt());
-            currentUser.setUsername(jwt.getClaim(Constant.USER_NAME).asString());
-            currentUser.setRole(jwt.getClaim(Constant.USER_ROLE).asInt());
-        } catch (TokenExpiredException e){
-            throw new LxxMallException(LxxMallExceptionEnum.TOKEN_EXPIRED);
-        } catch (JWTDecodeException e){
-            throw new LxxMallException(LxxMallExceptionEnum.TOKEN_WRONG);
-        }
+        if("OPTIONS".equals(request.getMethod())){
+            //对所有 get 请求放行
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            String token = request.getHeader(Constant.JWT_TOKEN);
+            if (token == null){
+                PrintWriter out = new HttpServletResponseWrapper((HttpServletResponse) servletResponse).getWriter();
+                out.write("{\n" +
+                        "    \"status\": 10007,\n" +
+                        "    \"msg\": \"NEED_JWT_TOKEN\",\n" +
+                        "    \"data\": null\n" +
+                        "}");
+                out.flush();
+                out.close();
+                return;
+            }
+            Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            try{
+                DecodedJWT jwt = verifier.verify(token);
+                currentUser = new User();
+                currentUser.setId(jwt.getClaim(Constant.USER_ID).asInt());
+                currentUser.setUsername(jwt.getClaim(Constant.USER_NAME).asString());
+                currentUser.setRole(jwt.getClaim(Constant.USER_ROLE).asInt());
+            } catch (TokenExpiredException e){
+                //token过期，抛出异常
+                throw new LxxMallException(LxxMallExceptionEnum.TOKEN_EXPIRED);
+            } catch (JWTDecodeException e){
+                //解码失败
+                throw new LxxMallException(LxxMallExceptionEnum.TOKEN_WRONG);
+            }
 
-        filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
     }
 
     @Override
