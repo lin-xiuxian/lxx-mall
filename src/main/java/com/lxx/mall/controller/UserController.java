@@ -6,6 +6,7 @@ import com.lxx.mall.common.ApiRestResponse;
 import com.lxx.mall.common.Constant;
 import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
+import com.lxx.mall.filter.UserFilter;
 import com.lxx.mall.model.pojo.User;
 import com.lxx.mall.service.EmailService;
 import com.lxx.mall.service.UserService;
@@ -120,7 +121,7 @@ public class UserController {
     @PostMapping("/user/update")
     @ResponseBody
     public ApiRestResponse updateUserInfo(HttpSession session, @RequestParam String signature) throws LxxMallException {
-        User currentUser = (User) session.getAttribute(Constant.LXX_MALL_USER);
+        User currentUser = UserFilter.userThreadLocal.get();
         if (currentUser == null) {
             return ApiRestResponse.error(LxxMallExceptionEnum.NEED_LOGIN);
         }

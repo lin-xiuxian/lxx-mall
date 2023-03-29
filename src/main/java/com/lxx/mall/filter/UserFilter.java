@@ -27,7 +27,8 @@ import java.io.PrintWriter;
  * @description 用户校验过滤器
  */
 public class UserFilter implements Filter {
-    public static User currentUser;
+    public static ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
+    public User currentUser = new User();
     @Autowired
     UserService userService;
     @Override
@@ -59,10 +60,10 @@ public class UserFilter implements Filter {
             JWTVerifier verifier = JWT.require(algorithm).build();
             try{
                 DecodedJWT jwt = verifier.verify(token);
-                currentUser = new User();
                 currentUser.setId(jwt.getClaim(Constant.USER_ID).asInt());
                 currentUser.setUsername(jwt.getClaim(Constant.USER_NAME).asString());
                 currentUser.setRole(jwt.getClaim(Constant.USER_ROLE).asInt());
+                userThreadLocal.set(currentUser);
             } catch (TokenExpiredException e){
                 //token过期，抛出异常
                 throw new LxxMallException(LxxMallExceptionEnum.TOKEN_EXPIRED);

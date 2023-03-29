@@ -72,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String create(CreateOrderReq createOrderReq){
         //拿到用户ID
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         //从购物车查找已勾选的商品
         List<CartVO> cartVOList = cartService.list(userId);
         ArrayList<CartVO> cartVOListTemp = new ArrayList<>();
@@ -186,7 +186,7 @@ public class OrderServiceImpl implements OrderService {
             throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
         }
         //订单存在，判断所属
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         if(!order.getUserId().equals(userId)){
             throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
         }
@@ -214,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageInfo listForCustomer(Integer pageNum, Integer pageSize){
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         PageHelper.startPage(pageNum, pageSize);
         List<Order> orderList = orderMapper.selectForCustomer(userId);
         List<OrderVO> orderVOList = orderListToOrderVOList(orderList);
@@ -241,7 +241,7 @@ public class OrderServiceImpl implements OrderService {
             throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
         }
         //订单存在，判断所属
-        Integer userId = UserFilter.currentUser.getId();
+        Integer userId = UserFilter.userThreadLocal.get().getId();
         if(!order.getUserId().equals(userId)){
             throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
         }
@@ -323,7 +323,7 @@ public class OrderServiceImpl implements OrderService {
             throw new LxxMallException(LxxMallExceptionEnum.NO_ORDER);
         }
         //普通用户校验订单所属
-        if (!userService.checkAdminRole(UserFilter.currentUser) && !order.getUserId().equals(UserFilter.currentUser.getId())) {
+        if (!userService.checkAdminRole(UserFilter.userThreadLocal.get()) && !order.getUserId().equals(UserFilter.userThreadLocal.get().getId())) {
             throw new LxxMallException(LxxMallExceptionEnum.NOT_YOUR_ORDER);
         }
         //发货后可以完结订单
