@@ -10,17 +10,12 @@ import com.lxx.mall.model.pojo.Product;
 import com.lxx.mall.model.request.AddProductReq;
 import com.lxx.mall.model.request.UpdateProductReq;
 import com.lxx.mall.service.ProductService;
-import io.swagger.annotations.Api;
+import com.lxx.mall.service.UploadService;
 import io.swagger.annotations.ApiOperation;
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
-import org.apache.ibatis.annotations.Update;
-import org.apache.poi.hpsf.Thumbnail;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,9 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,8 +38,8 @@ import java.util.UUID;
 public class ProductAdminController {
     @Autowired
     ProductService productService;
-    @Value("${file.upload.uri}")
-    String uri;
+    @Autowired
+    UploadService uploadService;
 
     @PostMapping("/admin/product/add")
     public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq) {
@@ -56,28 +48,8 @@ public class ProductAdminController {
     }
     @PostMapping("/admin/upload/file")
     public ApiRestResponse upload(HttpServletRequest httpServletRequest, @RequestParam("file")MultipartFile file){
-        String fileName = file.getOriginalFilename();
-        //获取文件后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        //生成文件名称 UUID
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid.toString() + suffixName;
-        //创建文件
-        File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
-        File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
-        createFile(fileDirectory, file, destFile);
-        String address = uri;
-        return ApiRestResponse.success("http://" + address + "/images/" + newFileName);
-    }
-
-    private URI getHost(URI uri){
-        URI effectiveURI;
-        try {
-            effectiveURI = new URI(uri.getScheme(), uri.getUserInfo(), uri.getHost(),uri.getPort(), null, null, null);
-        } catch (URISyntaxException e) {
-            effectiveURI = null;
-        }
-        return effectiveURI;
+        String result = uploadService.uploadFile(file);
+        return ApiRestResponse.success(result);
     }
 
     @ApiOperation("后台更新商品")
@@ -113,53 +85,23 @@ public class ProductAdminController {
     @ApiOperation("后台批量上传商品接口")
     @PostMapping("/admin/upload/product")
     public ApiRestResponse uploadProduct(@RequestParam("file") MultipartFile multipartFile) throws IOException {
-        String fileName = multipartFile.getOriginalFilename();
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        //生成 uuid
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid + suffixName;
+        String newFileName = uploadService.getNewFileName(multipartFile);
         //创建文件
         File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
         File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
-        createFile(fileDirectory, multipartFile, destFile);
-
+        uploadService.createFile(multipartFile, fileDirectory, destFile);
         productService.addProductByExcel(destFile);
         return ApiRestResponse.success();
     }
 
     @PostMapping("/admin/upload/image")
     public ApiRestResponse uploadImage(HttpServletRequest httpServletRequest, @RequestParam("file")MultipartFile file) throws IOException {
-        String fileName = file.getOriginalFilename();
-        //获取文件后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        //生成文件名称 UUID
-        UUID uuid = UUID.randomUUID();
-        String newFileName = uuid.toString() + suffixName;
-        //创建文件
-        File fileDirectory = new File(Constant.FILE_UPLOAD_DIR);
-        File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
-        createFile(fileDirectory, file, destFile);
-        Thumbnails.of(destFile).size(Constant.IMAGE_SIZE, Constant.IMAGE_SIZE).watermark(Positions.BOTTOM_RIGHT, ImageIO.read(new File(Constant.FILE_UPLOAD_DIR + Constant.WATER_MARK_JPG)), Constant.IMAGE_OPACITY).toFile(new File(Constant.FILE_UPLOAD_DIR + newFileName));
-
-        String address = uri;
-        return ApiRestResponse.success("http://" + address + "/images/" + newFileName);
-    }
-
-    private void createFile(File fileDirectory, MultipartFile file, File destFile) {
-        if (!fileDirectory.exists()) {
-            if (!fileDirectory.mkdir()){
-                throw new LxxMallException(LxxMallExceptionEnum.MKDIR_FAILED);
-            }
-        }
-        try {
-            file.transferTo(destFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String result = uploadService.uploadImage(file);
+        return ApiRestResponse.success(result);
     }
 
     @ApiOperation("后台批量更新商品 手动校验")
-    @PostMapping("/admin/product/batchUpdate1")
+    @PostMapping("/admin/product/batchUpdate")
     public ApiRestResponse batchUpdateProduct(@Valid @RequestBody List<UpdateProductReq> updateProductReqList){
         for (int i = 0; i < updateProductReqList.size(); i++) {
             UpdateProductReq updateProductReq = updateProductReqList.get(i);
