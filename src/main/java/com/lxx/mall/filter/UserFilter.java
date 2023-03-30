@@ -41,7 +41,7 @@ public class UserFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         if("OPTIONS".equals(request.getMethod())){
-            //对所有 get 请求放行
+            //对预检请求放行
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String token = request.getHeader(Constant.JWT_TOKEN);
