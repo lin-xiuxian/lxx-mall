@@ -260,7 +260,7 @@ public class OrderServiceImpl implements OrderService {
         HttpServletRequest request = attributes.getRequest();
 
         String address =  uri;
-        String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
+        String payUrl = "http://" + address + "/order/pay?orderNo=" + orderNo;
         try {
             QRCodeGenerator.generateQRCodeImage(payUrl, 350, 350, Constant.FILE_UPLOAD_DIR + orderNo + ".png");
         } catch (WriterException e) {

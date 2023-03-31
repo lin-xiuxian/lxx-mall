@@ -39,8 +39,8 @@ public class UserFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-
-        if("OPTIONS".equals(request.getMethod())){
+        String uri = request.getRequestURI().toString();
+        if("OPTIONS".equals(request.getMethod()) || uri.contains("pay")){
             //对预检请求放行
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
