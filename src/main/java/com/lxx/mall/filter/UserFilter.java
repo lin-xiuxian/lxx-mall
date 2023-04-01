@@ -11,6 +11,7 @@ import com.lxx.mall.exception.LxxMallException;
 import com.lxx.mall.exception.LxxMallExceptionEnum;
 import com.lxx.mall.model.pojo.User;
 import com.lxx.mall.service.UserService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;
@@ -39,6 +40,7 @@ public class UserFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
         String uri = request.getRequestURI().toString();
         if("OPTIONS".equals(request.getMethod()) || uri.contains("pay")){
             //对预检请求放行
